@@ -7,11 +7,30 @@ from app.forms.auth_forms import LoginForm, RegisterForm, ProfileForm
 
 auth_bp = Blueprint("auth", __name__, template_folder="../templates/auth")
 
+ROLE_PORTALS = {
+    "admin": "Admin",
+    "sales": "Sales",
+    "owner": "Owner",
+    "purchase": "Purchase",
+    "manufacture": "Manufacturing",
+    "inventory": "Inventory",
+    "cashier": "Cashier",
+}
+
+
+def _validate_role_login(user, portal_role):
+    if not user or not user.is_active:
+        return False
+    if not user.role:
+        return False
+    user_role_name = user.role.name.lower()
+    return user_role_name == portal_role or user.role.name == "Admin"
+
 
 @auth_bp.route("/login", methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for("dashboard.index"))
+        return redirect(url_for("dashboard.portals"))
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
@@ -19,9 +38,38 @@ def login():
             login_user(user, remember=form.remember_me.data)
             user.update_login_info()
             next_page = request.args.get("next")
-            return redirect(next_page or url_for("dashboard.index"))
+            return redirect(next_page or url_for("dashboard.portals"))
         flash("Invalid username or password", "danger")
-    return render_template("login.html", form=form)
+    return render_template("login.html", form=form, page_title="Login", portal_name=None)
+
+
+@auth_bp.route("/login/<string:portal_role>", methods=["GET", "POST"])
+def login_portal(portal_role):
+    portal_role = portal_role.lower()
+    if portal_role not in ROLE_PORTALS:
+        abort(404)
+
+    if current_user.is_authenticated:
+        return redirect(url_for("dashboard.portals"))
+
+    form = LoginForm()
+    portal_name = ROLE_PORTALS[portal_role]
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+        if _validate_role_login(user, portal_role) and user.check_password(form.password.data):
+            login_user(user, remember=form.remember_me.data)
+            user.update_login_info()
+            next_page = request.args.get("next")
+            return redirect(next_page or url_for("dashboard.portals"))
+        flash(f"Invalid credentials or you do not have access to the {portal_name} portal.", "danger")
+
+    return render_template(
+        "login.html",
+        form=form,
+        page_title=f"{portal_name} Login",
+        portal_name=portal_name,
+        login_action=url_for("auth.login_portal", portal_role=portal_role),
+    )
 
 
 @auth_bp.route("/logout")

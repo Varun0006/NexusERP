@@ -1,0 +1,123 @@
+{% extends "layouts/base.html" %}
+{% block title %}Portal Selection - NexusERP{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-5">
+    <h1 class="h3 mb-0 text-gradient"><i class="bi bi-lightning-fill"></i> Select Your Portal</h1>
+    <p class="text-muted mb-0">Welcome, <strong>{{ current_user.full_name or current_user.username }}</strong></p>
+</div>
+
+<div class="row g-4">
+    <!-- Admin Portal -->
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow border-0 glass-card h-100 portal-card" style="cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+            <div class="card-body p-4 d-flex flex-column">
+                <div class="bg-danger bg-opacity-10 text-danger rounded-circle p-3 mb-3" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                    <i class="bi bi-shield-lock fs-3"></i>
+                </div>
+                <h5 class="card-title fw-bold mb-2">Admin Dashboard</h5>
+                <p class="text-muted small flex-grow-1">System administration, user management, settings, and full access to all modules.</p>
+                <a href="{{ url_for('dashboard.index') }}" class="btn btn-danger btn-sm mt-auto">
+                    <i class="bi bi-arrow-right me-2"></i> Access Admin
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sales Portal -->
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow border-0 glass-card h-100 portal-card" style="cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+            <div class="card-body p-4 d-flex flex-column">
+                <div class="bg-success bg-opacity-10 text-success rounded-circle p-3 mb-3" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                    <i class="bi bi-cart-fill fs-3"></i>
+                </div>
+                <h5 class="card-title fw-bold mb-2">Sales Dashboard</h5>
+                <p class="text-muted small flex-grow-1">Manage sales orders, customers, and track sales performance metrics.</p>
+                <a href="{{ url_for('sales.list_orders') }}" class="btn btn-success btn-sm mt-auto">
+                    <i class="bi bi-arrow-right me-2"></i> Access Sales
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Purchase Portal -->
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow border-0 glass-card h-100 portal-card" style="cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+            <div class="card-body p-4 d-flex flex-column">
+                <div class="bg-warning bg-opacity-10 text-warning rounded-circle p-3 mb-3" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                    <i class="bi bi-bag-fill fs-3"></i>
+                </div>
+                <h5 class="card-title fw-bold mb-2">Purchase Dashboard</h5>
+                <p class="text-muted small flex-grow-1">Create and manage purchase orders, track vendor activity, and procurement.</p>
+                <a href="{{ url_for('purchase.list_orders') }}" class="btn btn-warning btn-sm mt-auto">
+                    <i class="bi bi-arrow-right me-2"></i> Access Purchase
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Inventory Portal -->
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow border-0 glass-card h-100 portal-card" style="cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+            <div class="card-body p-4 d-flex flex-column">
+                <div class="bg-info bg-opacity-10 text-info rounded-circle p-3 mb-3" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                    <i class="bi bi-inboxes-fill fs-3"></i>
+                </div>
+                <h5 class="card-title fw-bold mb-2">Inventory Dashboard</h5>
+                <p class="text-muted small flex-grow-1">Monitor stock levels, adjust inventory, and manage warehouse operations.</p>
+                <a href="{{ url_for('inventory.stock_view') }}" class="btn btn-info btn-sm mt-auto">
+                    <i class="bi bi-arrow-right me-2"></i> Access Inventory
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manufacturing Portal -->
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow border-0 glass-card h-100 portal-card" style="cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+            <div class="card-body p-4 d-flex flex-column">
+                <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-3 mb-3" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                    <i class="bi bi-gear-fill fs-3"></i>
+                </div>
+                <h5 class="card-title fw-bold mb-2">Manufacturing Dashboard</h5>
+                <p class="text-muted small flex-grow-1">Manage production orders, BOMs, work orders, and manufacturing workflows.</p>
+                <a href="{{ url_for('manufacturing.list_mos') }}" class="btn btn-primary btn-sm mt-auto">
+                    <i class="bi bi-arrow-right me-2"></i> Access Manufacturing
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cashier Portal -->
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow border-0 glass-card h-100 portal-card" style="cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+            <div class="card-body p-4 d-flex flex-column">
+                <div class="bg-secondary bg-opacity-10 text-secondary rounded-circle p-3 mb-3" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                    <i class="bi bi-cash-register fs-3"></i>
+                </div>
+                <h5 class="card-title fw-bold mb-2">Cashier Portal</h5>
+                <p class="text-muted small flex-grow-1">Point of sale terminal, cash management, and transaction processing.</p>
+                <a href="{{ url_for('pos.terminal') }}" class="btn btn-secondary btn-sm mt-auto">
+                    <i class="bi bi-arrow-right me-2"></i> Access Cashier
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Owner Portal -->
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow border-0 glass-card h-100 portal-card" style="cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+            <div class="card-body p-4 d-flex flex-column">
+                <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-3 mb-3" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                    <i class="bi bi-graph-up fs-3"></i>
+                </div>
+                <h5 class="card-title fw-bold mb-2">Owner Dashboard</h5>
+                <p class="text-muted small flex-grow-1">Business analytics, reports, KPIs, and strategic insights.</p>
+                <a href="{{ url_for('analytics.dashboard') }}" class="btn btn-primary btn-sm mt-auto">
+                    <i class="bi bi-arrow-right me-2"></i> Access Owner
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
