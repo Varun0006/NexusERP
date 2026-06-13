@@ -9,3 +9,13 @@ login_manager = LoginManager()
 migrate = Migrate()
 socketio = SocketIO()
 bcrypt = Bcrypt()
+
+
+login_manager.login_view = "auth.login"
+login_manager.login_message_category = "info"
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    from app.models.user import User
+    return User.query.get(int(user_id))

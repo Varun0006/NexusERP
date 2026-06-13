@@ -1,5 +1,7 @@
 from app.extensions import db
 from datetime import datetime
+from app.models.bom_component import BomComponent
+from app.models.bom_operation import BomOperation
 
 
 class Bom(db.Model):
