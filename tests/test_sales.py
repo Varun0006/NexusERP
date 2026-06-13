@@ -147,3 +147,65 @@ def test_sales_insufficient_stock(client, db):
 
     order = SalesOrder.query.get(order.id)
     assert order.status == "cancelled"
+
+
+def test_sales_view_confirmed_order_risk_widget(client, db):
+    from app.models.user import User
+    from app.models.role import Role
+    from app.models.customer import Customer
+    from app.models.product import Product
+    from app.models.category import Category
+    from app.models.sales_order import SalesOrder
+    from app.models.sales_order_line import SalesOrderLine
+    from app.services.inventory.inventory_service import InventoryService
+
+    role = Role.query.filter_by(name="Sales User").first()
+    user = User(username="sales_view_test", email="sales_view_test@test.com", role_id=role.id)
+    user.set_password("pass123")
+    db.session.add(user)
+
+    customer = Customer(name="Gamma Corp", email="gamma@test.com")
+    category = Category(name="Risk Test Goods")
+    db.session.add(customer)
+    db.session.add(category)
+    db.session.commit()
+
+    product = Product(
+        name="Risky Desk",
+        sku="FG-RSK-001",
+        category_id=category.id,
+        sales_price=999.0,
+        cost_price=600.0,
+        product_type="finished_goods",
+        procurement_type="mts",
+        is_active=True,
+    )
+    db.session.add(product)
+    db.session.commit()
+
+    inv = InventoryService.get_or_create_inventory(product.id)
+    inv.on_hand_qty = 1.0
+    inv.reserved_qty = 0.0
+    db.session.commit()
+
+    order = SalesOrder(order_number="SO-RISK-0001", customer_id=customer.id, status="confirmed")
+    db.session.add(order)
+    db.session.flush()
+
+    line = SalesOrderLine(
+        sales_order_id=order.id,
+        product_id=product.id,
+        quantity=3.0,
+        unit_price=product.sales_price,
+        tax_percent=0.0,
+        line_total=2997.0,
+    )
+    db.session.add(line)
+    db.session.commit()
+
+    client.post("/auth/login", data={"username": "sales_view_test", "password": "pass123"})
+    response = client.get(f"/sales/{order.id}")
+
+    assert response.status_code == 200
+    assert b"Delivery Risk Predictor" in response.data
+    assert b"Risk Level" in response.data

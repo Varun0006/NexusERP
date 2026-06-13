@@ -3,11 +3,14 @@ import click
 from flask import Flask
 from config import Config
 from app.extensions import db, login_manager, migrate, socketio, bcrypt
+from app.services.audit.auto_audit import register_audit_hooks
 
 
 def create_app(config_class=Config):
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object(config_class)
+
+    register_audit_hooks()
 
     os.makedirs(app.instance_path, exist_ok=True)
 

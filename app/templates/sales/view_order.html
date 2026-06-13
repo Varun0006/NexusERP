@@ -4,7 +4,7 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div class="d-flex align-items-center">
         <a href="{{ url_for('sales.list_orders') }}" class="btn btn-outline-secondary btn-sm rounded-pill me-3"><i class="bi bi-arrow-left"></i> Back to List</a>
-        <h1 class="h3 mb-0 text-gradient"><i class="bi bi-receipt"></i> Sales Order: {{ order.order_number }}</h1>
+        <h1 class="h3 mb-0 text-light fw-semibold"><i class="bi bi-receipt"></i> Sales Order: {{ order.order_number }}</h1>
     </div>
     
     <div class="d-flex gap-2">
@@ -27,7 +27,7 @@
 <!-- Progress Timeline Tracker -->
 <div class="card shadow border-0 glass-card mb-4">
     <div class="card-body p-4">
-        <div class="d-flex justify-content-between align-items-center position-relative w-75 mx-auto py-3">
+        <div class="d-flex justify-content-between align-items-center position-relative w-100 mx-auto py-3" style="max-width: 920px;">
             <!-- Background Line -->
             <div class="position-absolute top-50 start-0 end-0 translate-middle-y bg-secondary bg-opacity-25" style="height: 4px; z-index: 1;"></div>
             <!-- Progress Fill Line -->
@@ -88,7 +88,7 @@
                     </li>
                     <li class="mb-2 d-flex justify-content-between">
                         <span class="text-secondary">Expected Delivery:</span>
-                        <span class="text-light fw-medium">{{ order.expected_date.strftime('%Y-%m-%d') if order.expected_date else '-' }}</span>
+                        <span class="text-light fw-medium">{{ order.expected_date.strftime('%Y-%m-%d') if order.expected_date else 'Not planned' }}</span>
                     </li>
                     <li class="mb-2 d-flex justify-content-between">
                         <span class="text-secondary">Actual Delivery:</span>
@@ -172,7 +172,7 @@
                             </div>
                             <div class="d-flex justify-content-between">
                                 <span class="text-light fw-bold fs-5">Grand Total:</span>
-                                <span class="text-gradient fw-bold fs-5">₹{{ "%.2f"|format(order.total_amount) }}</span>
+                                <span class="text-info fw-bold fs-5">₹{{ "%.2f"|format(order.total_amount) }}</span>
                             </div>
                         </div>
                     </div>

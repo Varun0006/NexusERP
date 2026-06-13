@@ -1,6 +1,6 @@
 from app.extensions import db
 from app.models.audit_log import AuditLog
-from datetime import datetime
+import json
 
 
 class AuditService:
@@ -26,8 +26,8 @@ class AuditService:
             reference_number=reference_number,
             description=description,
             ip_address=ip_address,
-            old_values=str(old_values) if old_values else None,
-            new_values=str(new_values) if new_values else None,
+            old_values=json.dumps(old_values, default=str) if old_values else None,
+            new_values=json.dumps(new_values, default=str) if new_values else None,
         )
         db.session.add(log)
         db.session.commit()

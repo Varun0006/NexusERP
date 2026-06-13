@@ -1,7 +1,7 @@
 from app.models.sales_order import SalesOrder
-from app.models.sales_order_line import SalesOrderLine
 from app.models.inventory import Inventory
 from app.models.bom import Bom
+
 
 class RiskService:
     def evaluate_order_risk(self, order_id):
@@ -20,9 +20,10 @@ class RiskService:
             product = line.product
             # Check stock
             inv = Inventory.query.filter_by(product_id=product.id).first()
-            qty_on_hand = inv.quantity_on_hand if inv else 0
+            qty_on_hand = inv.on_hand_qty if inv else 0
+            free_qty = inv.free_to_use_qty if inv else 0
             
-            if qty_on_hand < line.quantity:
+            if free_qty < line.quantity:
                 if product.procurement_type == "mto":
                     medium_risk = True
                     reasons.append(f"Shortage of MTO product '{product.name}'. Needs manufacturing.")
@@ -34,14 +35,15 @@ class RiskService:
                     else:
                         for comp in bom.components:
                             comp_inv = Inventory.query.filter_by(product_id=comp.product_id).first()
-                            comp_qty = comp_inv.quantity_on_hand if comp_inv else 0
+                            comp_qty = comp_inv.on_hand_qty if comp_inv else 0
                             required_comp_qty = comp.quantity * line.quantity
                             if comp_qty < required_comp_qty:
                                 high_risk = True
-                                reasons.append(f"Component shortage: '{comp.product.name}' (Need {required_comp_qty}, have {comp_qty}).")
+                                comp_name = comp.component_product.name if comp.component_product else f"Product #{comp.product_id}"
+                                reasons.append(f"Component shortage: '{comp_name}' (Need {required_comp_qty}, have {comp_qty}).")
                 else:
                     high_risk = True
-                    reasons.append(f"Stock shortage for MTS product '{product.name}'. (Need {line.quantity}, have {qty_on_hand}).")
+                    reasons.append(f"Stock shortage for MTS product '{product.name}'. (Need {line.quantity}, free {free_qty}).")
 
         if high_risk:
             return {"level": "High", "reasons": reasons, "color": "danger"}
