@@ -1,0 +1,73 @@
+{% extends "layouts/base.html" %}
+{% block title %}POS Terminal - NexusERP{% endblock %}
+{% block content %}
+<h4><i class="bi bi-cash-register"></i> POS Terminal</h4>
+{% if not session %}
+<div class="card"><div class="card-body text-center">
+    <form method="POST" action="{{ url_for('pos.open_session') }}" class="d-inline-block">
+        <div class="mb-3"><label class="form-label">Opening Balance</label><input type="number" name="opening_balance" class="form-control" step="0.01" value="0"></div>
+        <button class="btn btn-success"><i class="bi bi-play"></i> Open Session</button>
+    </form>
+</div></div>
+{% else %}
+<div class="alert alert-info">Session: {{ session.session_number }} | Opened: {{ session.opened_at.strftime('%Y-%m-%d %H:%M') }}</div>
+<div class="row">
+    <div class="col-md-8">
+        <div class="card"><div class="card-body">
+            <div class="row g-2">{% for p in products %}
+                <div class="col-md-3">
+                    <button class="btn btn-outline-light w-100 product-btn" data-id="{{ p.id }}" data-name="{{ p.name }}" data-price="{{ p.sales_price }}">
+                        <small>{{ p.name }}</small><br><strong>${{ "%.2f"|format(p.sales_price) }}</strong>
+                    </button>
+                </div>{% endfor %}
+            </div>
+        </div></div>
+    </div>
+    <div class="col-md-4">
+        <div class="card"><div class="card-header"><h6>Cart</h6></div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('pos.checkout') }}" id="checkout-form">
+                    <div id="cart-items"></div>
+                    <input type="hidden" name="customer_id" value="">
+                    <div class="mb-3">
+                        <label class="form-label">Payment</label>
+                        <select name="payment_method" class="form-select">
+                            <option value="cash">Cash</option>
+                            <option value="card">Card</option>
+                            <option value="upi">UPI</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary w-100"><i class="bi bi-check-lg"></i> Checkout</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+{% block extra_js %}
+<script>
+document.querySelectorAll('.product-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const id = this.dataset.id;
+        const name = this.dataset.name;
+        const price = this.dataset.price;
+        const cart = document.getElementById('cart-items');
+        const existing = cart.querySelector(`[data-pid="${id}"]`);
+        if (existing) {
+            const qty = existing.querySelector('.qty-input');
+            qty.value = parseFloat(qty.value) + 1;
+        } else {
+            const div = document.createElement('div');
+            div.className = 'mb-2 border-bottom pb-2';
+            div.setAttribute('data-pid', id);
+            div.innerHTML = `<strong>${name}</strong><br>
+                <input type="hidden" name="product_id[]" value="${id}">
+                <input type="number" name="quantity[]" class="form-control form-control-sm qty-input" value="1" min="0.01" step="1">
+                <small>$${parseFloat(price).toFixed(2)}</small>`;
+            cart.appendChild(div);
+        }
+    });
+});
+</script>
+{% endblock %}

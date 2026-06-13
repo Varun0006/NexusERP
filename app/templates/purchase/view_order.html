@@ -1,0 +1,31 @@
+{% extends "layouts/base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4>{{ order.order_number }}</h4>
+    <div>{% if order.status == 'draft' %}
+        <a href="{{ url_for('purchase.edit_order', id=order.id) }}" class="btn btn-outline-secondary"><i class="bi bi-pencil"></i></a>
+        <form method="POST" action="{{ url_for('purchase.confirm_order', id=order.id) }}" class="d-inline">
+            <button class="btn btn-success"><i class="bi bi-check-lg"></i> Confirm</button>
+        </form>{% elif order.status == 'confirmed' %}
+        <a href="{{ url_for('purchase.receive_order', id=order.id) }}" class="btn btn-primary"><i class="bi bi-inbox"></i> Receive</a>{% endif %}
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="card"><div class="card-body">
+            <p><strong>Vendor:</strong> {{ order.vendor.name }}</p>
+            <p><strong>Status:</strong> <span class="badge bg-{{ 'success' if order.status == 'received' else 'warning' if order.status == 'confirmed' else 'secondary' }}">{{ order.status }}</span></p>
+        </div></div>
+    </div>
+    <div class="col-12 mt-3">
+        <div class="card"><div class="card-body">
+            <table class="table table-dark table-sm">
+                <thead><tr><th>Product</th><th>Qty</th><th>Cost</th><th>Total</th></tr></thead>
+                <tbody>{% for line in order.lines %}
+                    <tr><td>{{ line.product.name }}</td><td>{{ line.quantity }}</td><td>${{ "%.2f"|format(line.unit_cost) }}</td><td>${{ "%.2f"|format(line.line_total) }}</td></tr>{% endfor %}
+                </tbody>
+            </table>
+        </div></div>
+    </div>
+</div>
+{% endblock %}

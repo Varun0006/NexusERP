@@ -1,0 +1,19 @@
+{% extends "layouts/base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4>{{ mo.mo_number }}</h4>
+    <div>{% if mo.status == 'confirmed' %}
+        <form method="POST" action="{{ url_for('manufacturing.start_mo', id=mo.id) }}" class="d-inline">
+            <button class="btn btn-primary"><i class="bi bi-play"></i> Start</button>
+        </form>{% elif mo.status == 'in_progress' %}
+        <form method="POST" action="{{ url_for('manufacturing.complete_mo', id=mo.id) }}" class="d-inline">
+            <button class="btn btn-success"><i class="bi bi-check-lg"></i> Complete</button>
+        </form>{% endif %}
+    </div>
+</div>
+<div class="card"><div class="card-body">
+    <p><strong>Product:</strong> {{ mo.product.name }}</p>
+    <p><strong>Quantity:</strong> {{ mo.quantity }}</p>
+    <p><strong>Status:</strong> <span class="badge bg-{{ 'success' if mo.status == 'completed' else 'info' if mo.status == 'in_progress' else 'warning' if mo.status == 'confirmed' else 'secondary' }}">{{ mo.status }}</span></p>
+</div></div>
+{% endblock %}

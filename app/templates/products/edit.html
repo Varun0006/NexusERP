@@ -1,0 +1,29 @@
+{% extends "layouts/base.html" %}
+{% block title %}Edit Product - NexusERP{% endblock %}
+{% block content %}
+<h4>Edit Product</h4>
+<div class="card"><div class="card-body">
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="row g-3">
+            <div class="col-md-6">{{ form.name.label }}{{ form.name(class="form-control") }}</div>
+            <div class="col-md-3">{{ form.sku.label }}{{ form.sku(class="form-control") }}</div>
+            <div class="col-md-3">{{ form.barcode.label }}{{ form.barcode(class="form-control") }}</div>
+            <div class="col-md-4">{{ form.category_id.label }}{{ form.category_id(class="form-select") }}</div>
+            <div class="col-md-4">{{ form.product_type.label }}{{ form.product_type(class="form-select") }}</div>
+            <div class="col-md-4">{{ form.unit_of_measure.label }}{{ form.unit_of_measure(class="form-select") }}</div>
+            <div class="col-12">{{ form.description.label }}{{ form.description(class="form-control", rows=3) }}</div>
+            <div class="col-md-3">{{ form.cost_price.label }}{{ form.cost_price(class="form-control") }}</div>
+            <div class="col-md-3">{{ form.sales_price.label }}{{ form.sales_price(class="form-control") }}</div>
+            <div class="col-md-3">{{ form.tax_percent.label }}{{ form.tax_percent(class="form-control") }}</div>
+            <div class="col-md-3">{{ form.reorder_level.label }}{{ form.reorder_level(class="form-control") }}</div>
+            <div class="col-md-3">{{ form.safety_stock.label }}{{ form.safety_stock(class="form-control") }}</div>
+            <div class="col-md-3">{{ form.procurement_type.label }}{{ form.procurement_type(class="form-select") }}</div>
+            <div class="col-md-3">{{ form.lead_time_days.label }}{{ form.lead_time_days(class="form-control") }}</div>
+            <div class="col-md-3">{{ form.is_active(class="form-check-input") }}{{ form.is_active.label(class="form-check-label ms-2") }}</div>
+        </div>
+        {{ form.submit(class="btn btn-primary mt-3") }}
+        <a href="{{ url_for('products.list_products') }}" class="btn btn-secondary mt-3">Cancel</a>
+    </form>
+</div></div>
+{% endblock %}

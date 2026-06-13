@@ -1,0 +1,14 @@
+{% extends "layouts/base.html" %}
+{% block content %}
+<h4>New Purchase Order</h4>
+<div class="card"><div class="card-body">
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="mb-3">{{ form.vendor_id.label }}{{ form.vendor_id(class="form-select") }}</div>
+        <div class="mb-3">{{ form.expected_date.label }}{{ form.expected_date(class="form-control", type="date") }}</div>
+        <div class="mb-3">{{ form.notes.label }}{{ form.notes(class="form-control", rows=3) }}</div>
+        {{ form.submit(class="btn btn-primary") }}
+        <a href="{{ url_for('purchase.list_orders') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div></div>
+{% endblock %}

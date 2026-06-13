@@ -1,0 +1,18 @@
+{% extends "layouts/base.html" %}
+{% block content %}
+<h4>New BOM</h4>
+<div class="card"><div class="card-body">
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="mb-3">{{ form.product_id.label }}{{ form.product_id(class="form-select") }}</div>
+        <div class="mb-3">{{ form.name.label }}{{ form.name(class="form-control") }}</div>
+        <div class="row">
+            <div class="col-md-4">{{ form.version.label }}{{ form.version(class="form-control") }}</div>
+            <div class="col-md-4">{{ form.quantity.label }}{{ form.quantity(class="form-control") }}</div>
+        </div>
+        <div class="mb-3 mt-3">{{ form.notes.label }}{{ form.notes(class="form-control", rows=3) }}</div>
+        {{ form.submit(class="btn btn-primary") }}
+        <a href="{{ url_for('bom.list_boms') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div></div>
+{% endblock %}

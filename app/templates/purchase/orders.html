@@ -1,0 +1,21 @@
+{% extends "layouts/base.html" %}
+{% block title %}Purchase Orders - NexusERP{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4><i class="bi bi-truck"></i> Purchase Orders</h4>
+    <a href="{{ url_for('purchase.create_order') }}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> New PO</a>
+</div>
+<div class="card"><div class="card-body">
+    <table class="table table-dark table-hover">
+        <thead><tr><th>PO</th><th>Vendor</th><th>Date</th><th>Total</th><th>Status</th><th></th></tr></thead>
+        <tbody>{% for po in orders.items %}
+            <tr>
+                <td>{{ po.order_number }}</td><td>{{ po.vendor.name }}</td><td>{{ po.order_date.strftime('%Y-%m-%d') }}</td>
+                <td>${{ "%.2f"|format(po.total_amount) }}</td>
+                <td><span class="badge bg-{{ 'success' if po.status == 'received' else 'warning' if po.status == 'confirmed' else 'secondary' }}">{{ po.status }}</span></td>
+                <td><a href="{{ url_for('purchase.view_order', id=po.id) }}" class="btn btn-sm btn-outline-info"><i class="bi bi-eye"></i></a></td>
+            </tr>{% else %}<tr><td colspan="6" class="text-muted text-center">No POs.</td></tr>{% endfor %}
+        </tbody>
+    </table>
+</div></div>
+{% endblock %}

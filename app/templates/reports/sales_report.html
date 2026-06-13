@@ -1,0 +1,26 @@
+{% extends "layouts/base.html" %}
+{% block content %}
+<h4>Sales Report</h4>
+<div class="card"><div class="card-body">
+    <canvas id="salesChart" height="100"></canvas>
+    <table class="table table-dark table-sm mt-3">
+        <thead><tr><th>Date</th><th>Orders</th><th>Revenue</th></tr></thead>
+        <tbody>{% for s in sales %}
+            <tr><td>{{ s.date }}</td><td>{{ s.count }}</td><td>${{ "%.2f"|format(s.total) }}</td></tr>{% else %}
+            <tr><td colspan="3" class="text-muted">No data.</td></tr>{% endfor %}
+        </tbody>
+    </table>
+</div></div>
+{% endblock %}
+{% block extra_js %}
+<script>
+const ctx = document.getElementById('salesChart').getContext('2d');
+new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: [{% for s in sales %}'{{ s.date }}',{% endfor %}],
+        datasets: [{label: 'Revenue', data: [{% for s in sales %}{{ s.total }},{% endfor %}], borderColor: '#0d6efd', tension: 0.3}]
+    }
+});
+</script>
+{% endblock %}

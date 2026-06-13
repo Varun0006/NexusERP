@@ -1,0 +1,14 @@
+{% extends "layouts/base.html" %}
+{% block content %}
+<h4>New Manufacturing Order</h4>
+<div class="card"><div class="card-body">
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="mb-3">{{ form.product_id.label }}{{ form.product_id(class="form-select") }}</div>
+        <div class="mb-3">{{ form.quantity.label }}{{ form.quantity(class="form-control") }}</div>
+        <div class="mb-3">{{ form.notes.label }}{{ form.notes(class="form-control", rows=3) }}</div>
+        {{ form.submit(class="btn btn-primary") }}
+        <a href="{{ url_for('manufacturing.list_mos') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div></div>
+{% endblock %}

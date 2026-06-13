@@ -1,0 +1,18 @@
+{% extends "layouts/base.html" %}
+{% block title %}Vendors - NexusERP{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4><i class="bi bi-shop"></i> Vendors</h4>
+    <a href="{{ url_for('vendors.create_vendor') }}" class="btn btn-primary"><i class="bi bi-plus-lg"></i></a>
+</div>
+<div class="card"><div class="card-body">
+    <table class="table table-dark table-hover">
+        <thead><tr><th>Name</th><th>Contact</th><th>Email</th><th>Phone</th><th>Lead Time</th><th></th></tr></thead>
+        <tbody>{% for v in vendors.items %}
+            <tr><td>{{ v.name }}</td><td>{{ v.contact_person or '-' }}</td><td>{{ v.email or '-' }}</td><td>{{ v.phone or '-' }}</td><td>{{ v.lead_time_days }}d</td>
+                <td><a href="{{ url_for('vendors.edit_vendor', id=v.id) }}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></a></td>
+            </tr>{% else %}<tr><td colspan="6" class="text-muted text-center">No vendors.</td></tr>{% endfor %}
+        </tbody>
+    </table>
+</div></div>
+{% endblock %}

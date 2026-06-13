@@ -1,0 +1,25 @@
+{% extends "layouts/base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <div class="card"><div class="card-body text-center">
+            <h5>NexusERP</h5>
+            <h6>Receipt</h6>
+            <hr>
+            <p><strong>{{ order.order_number }}</strong></p>
+            <p>{{ order.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+            <hr>
+            {% for line in order.lines %}
+            <div class="d-flex justify-content-between">
+                <span>{{ line.product.name }} x {{ line.quantity }}</span>
+                <span>${{ "%.2f"|format(line.line_total) }}</span>
+            </div>{% endfor %}
+            <hr>
+            <div class="d-flex justify-content-between"><strong>Total</strong><strong>${{ "%.2f"|format(order.total_amount) }}</strong></div>
+            <p class="mt-3 text-muted">Payment: {{ order.payment_method }}</p>
+            <button class="btn btn-secondary" onclick="window.print()"><i class="bi bi-printer"></i> Print</button>
+            <a href="{{ url_for('pos.terminal') }}" class="btn btn-primary">New Sale</a>
+        </div></div>
+    </div>
+</div>
+{% endblock %}
