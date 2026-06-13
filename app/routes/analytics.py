@@ -14,29 +14,35 @@ analytics_bp = Blueprint(
 )
 
 
+# Show dashboard
 @analytics_bp.route("/")
 @login_required
 @permission_required("view_reports")
 def dashboard():
+    # Calculate sum of all delivered/closed sales orders
     total_revenue = (
         db.session.query(func.sum(SalesOrder.total_amount))
         .filter(SalesOrder.status.in_(["delivered", "closed"]))
         .scalar()
         or 0
     )
+    # Calculate sum of all received/closed purchase orders
     total_purchases = (
         db.session.query(func.sum(PurchaseOrder.total_amount))
         .filter(PurchaseOrder.status.in_(["received", "closed"]))
         .scalar()
         or 0
     )
+    # Count total number of products configured in catalog
     product_count = Product.query.count()
     # Consistent low stock logic: on_hand_qty <= Product.safety_stock
+    # Calculate count of items where physical stock drops below safety limit
     low_stock_count = (
         Inventory.query.join(Product)
         .filter(Inventory.on_hand_qty <= Product.safety_stock)
         .count()
     )
+    # Render the main dashboard template containing charts
     return render_template(
         "analytics/dashboard.html",
         total_revenue=total_revenue,

@@ -11,13 +11,18 @@ except ImportError:
 
 
 def create_app(config_class=Config):
+    # Initialize the Flask application object
     app = Flask(__name__, instance_relative_config=True)
+    # Load configuration parameters
     app.config.from_object(config_class)
 
+    # Register audit hooks for capturing database changes
     register_audit_hooks()
 
+    # Ensure the instance directory exists for SQLite database files
     os.makedirs(app.instance_path, exist_ok=True)
 
+    # Initialize database, migration, and auth extensions
     db.init_app(app)
     login_manager.init_app(app)
     migrate.init_app(app, db)
