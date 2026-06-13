@@ -12,6 +12,13 @@ from datetime import datetime
 dashboard_bp = Blueprint("dashboard", __name__, template_folder="../templates/dashboard")
 
 
+@dashboard_bp.route("/portals")
+@login_required
+def portals():
+    """Show portal selection page with role-specific dashboard buttons"""
+    return render_template("portals.html")
+
+
 @dashboard_bp.route("/")
 @login_required
 def index():
