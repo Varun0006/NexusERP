@@ -1,28 +1,139 @@
 {% extends "layouts/base.html" %}
 {% block title %}Audit Logs - NexusERP{% endblock %}
 {% block content %}
-<h4><i class="bi bi-journal-text"></i> Audit Logs</h4>
-<div class="card"><div class="card-body">
-    <form class="mb-3" method="GET">
-        <select name="module" class="form-select w-auto d-inline" onchange="this.form.submit()">
-            <option value="">All Modules</option>{% for m in modules %}
-            <option value="{{ m }}" {{ 'selected' if request.args.get('module') == m }}>{{ m }}</option>{% endfor %}
-        </select>
-    </form>
-    <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
-        <table class="table table-dark table-sm">
-            <thead><tr><th>Date</th><th>User</th><th>Action</th><th>Module</th><th>Reference</th><th>Description</th></tr></thead>
-            <tbody>{% for log in logs.items %}
-                <tr>
-                    <td>{{ log.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
-                    <td>{{ log.user.username if log.user else 'System' }}</td>
-                    <td><span class="badge bg-info">{{ log.action }}</span></td>
-                    <td>{{ log.module }}</td>
-                    <td>{{ log.reference_number or '-' }}</td>
-                    <td>{{ log.description or '-' }}</td>
-                </tr>{% else %}<tr><td colspan="6" class="text-muted text-center">No logs.</td></tr>{% endfor %}
-            </tbody>
-        </table>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0"><i class="bi bi-journal-text"></i> Audit Logs</h4>
+    <small class="text-secondary">{{ logs.total }} records</small>
+</div>
+
+<div class="card glass-card mb-3">
+    <div class="card-body">
+        <form method="GET" class="row g-2 align-items-end">
+            <div class="col-md-2">
+                <label class="form-label">Module</label>
+                <select name="module" class="form-select">
+                    <option value="">All Modules</option>
+                    {% for m in modules %}
+                    <option value="{{ m }}" {{ 'selected' if filters.module == m else '' }}>{{ m }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Action</label>
+                <select name="action" class="form-select">
+                    <option value="">All Actions</option>
+                    {% for a in actions %}
+                    <option value="{{ a }}" {{ 'selected' if filters.action == a else '' }}>{{ a }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">User</label>
+                <select name="user_id" class="form-select">
+                    <option value="">All Users</option>
+                    {% for user in users %}
+                    <option value="{{ user.id }}" {{ 'selected' if filters.user_id == user.id else '' }}>{{ user.username }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">From</label>
+                <input type="date" name="date_from" value="{{ filters.date_from }}" class="form-control">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">To</label>
+                <input type="date" name="date_to" value="{{ filters.date_to }}" class="form-control">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Search</label>
+                <input type="text" name="q" value="{{ filters.q }}" class="form-control" placeholder="Reference/description">
+            </div>
+            <div class="col-12 d-flex gap-2">
+                <button type="submit" class="btn btn-primary btn-sm"><i class="bi bi-funnel"></i> Apply Filters</button>
+                <a href="{{ url_for('audit.logs') }}" class="btn btn-outline-secondary btn-sm">Reset</a>
+            </div>
+        </form>
     </div>
-</div></div>
+</div>
+
+<div class="card glass-card">
+    <div class="card-body p-0">
+        <div class="table-responsive" style="max-height: 68vh; overflow-y: auto;">
+            <table class="table table-dark table-sm align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th class="px-3">Date</th>
+                        <th>User</th>
+                        <th>Action</th>
+                        <th>Module</th>
+                        <th>Reference</th>
+                        <th>Description</th>
+                        <th style="min-width: 260px;">Changes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in logs.items %}
+                    <tr>
+                        <td class="px-3">{{ log.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                        <td>{{ log.user.username if log.user else 'System' }}</td>
+                        <td>
+                            {% if log.action == 'create' %}
+                            <span class="badge bg-success">create</span>
+                            {% elif log.action == 'update' %}
+                            <span class="badge bg-warning text-dark">update</span>
+                            {% elif log.action == 'delete' %}
+                            <span class="badge bg-danger">delete</span>
+                            {% else %}
+                            <span class="badge bg-info">{{ log.action }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ log.module }}</td>
+                        <td>{{ log.reference_number or '-' }}</td>
+                        <td>{{ log.description or '-' }}</td>
+                        <td>
+                            {% if log.old_values_pretty or log.new_values_pretty %}
+                            <details>
+                                <summary class="small text-info">View payload</summary>
+                                {% if log.old_values_pretty %}
+                                <div class="mt-2">
+                                    <div class="small text-secondary">Old</div>
+                                    <pre class="small bg-black p-2 rounded border border-secondary-subtle mb-2">{{ log.old_values_pretty }}</pre>
+                                </div>
+                                {% endif %}
+                                {% if log.new_values_pretty %}
+                                <div>
+                                    <div class="small text-secondary">New</div>
+                                    <pre class="small bg-black p-2 rounded border border-secondary-subtle">{{ log.new_values_pretty }}</pre>
+                                </div>
+                                {% endif %}
+                            </details>
+                            {% else %}
+                            <span class="text-secondary">-</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="text-muted text-center py-4">No audit logs found for the selected filters.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% if logs.pages > 1 %}
+<nav class="mt-3">
+    <ul class="pagination pagination-sm">
+        <li class="page-item {{ 'disabled' if not logs.has_prev else '' }}">
+            <a class="page-link" href="{{ url_for('audit.logs', page=logs.prev_num, module=filters.module, action=filters.action, user_id=filters.user_id, q=filters.q, date_from=filters.date_from, date_to=filters.date_to) if logs.has_prev else '#' }}">Previous</a>
+        </li>
+        <li class="page-item disabled"><span class="page-link">Page {{ logs.page }} / {{ logs.pages }}</span></li>
+        <li class="page-item {{ 'disabled' if not logs.has_next else '' }}">
+            <a class="page-link" href="{{ url_for('audit.logs', page=logs.next_num, module=filters.module, action=filters.action, user_id=filters.user_id, q=filters.q, date_from=filters.date_from, date_to=filters.date_to) if logs.has_next else '#' }}">Next</a>
+        </li>
+    </ul>
+</nav>
+{% endif %}
 {% endblock %}
