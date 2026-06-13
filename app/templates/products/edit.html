@@ -1,29 +1,96 @@
 {% extends "layouts/base.html" %}
-{% block title %}Edit Product - NexusERP{% endblock %}
+{% block title %}Edit {{ product.name }} - NexusERP{% endblock %}
 {% block content %}
-<h4>Edit Product</h4>
-<div class="card"><div class="card-body">
-    <form method="POST">
-        {{ form.hidden_tag() }}
-        <div class="row g-3">
-            <div class="col-md-6">{{ form.name.label }}{{ form.name(class="form-control") }}</div>
-            <div class="col-md-3">{{ form.sku.label }}{{ form.sku(class="form-control") }}</div>
-            <div class="col-md-3">{{ form.barcode.label }}{{ form.barcode(class="form-control") }}</div>
-            <div class="col-md-4">{{ form.category_id.label }}{{ form.category_id(class="form-select") }}</div>
-            <div class="col-md-4">{{ form.product_type.label }}{{ form.product_type(class="form-select") }}</div>
-            <div class="col-md-4">{{ form.unit_of_measure.label }}{{ form.unit_of_measure(class="form-select") }}</div>
-            <div class="col-12">{{ form.description.label }}{{ form.description(class="form-control", rows=3) }}</div>
-            <div class="col-md-3">{{ form.cost_price.label }}{{ form.cost_price(class="form-control") }}</div>
-            <div class="col-md-3">{{ form.sales_price.label }}{{ form.sales_price(class="form-control") }}</div>
-            <div class="col-md-3">{{ form.tax_percent.label }}{{ form.tax_percent(class="form-control") }}</div>
-            <div class="col-md-3">{{ form.reorder_level.label }}{{ form.reorder_level(class="form-control") }}</div>
-            <div class="col-md-3">{{ form.safety_stock.label }}{{ form.safety_stock(class="form-control") }}</div>
-            <div class="col-md-3">{{ form.procurement_type.label }}{{ form.procurement_type(class="form-select") }}</div>
-            <div class="col-md-3">{{ form.lead_time_days.label }}{{ form.lead_time_days(class="form-control") }}</div>
-            <div class="col-md-3">{{ form.is_active(class="form-check-input") }}{{ form.is_active.label(class="form-check-label ms-2") }}</div>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex align-items-center">
+        <a href="{{ url_for('products.view_product', id=product.id) }}" class="btn btn-outline-secondary btn-sm rounded-pill me-3"><i class="bi bi-arrow-left"></i> Cancel</a>
+        <div>
+            <h1 class="h3 mb-0 text-white font-secondary">Edit Product</h1>
+            <span class="text-secondary small">SKU: <strong class="text-gradient">{{ product.sku }}</strong></span>
         </div>
-        {{ form.submit(class="btn btn-primary mt-3") }}
-        <a href="{{ url_for('products.list_products') }}" class="btn btn-secondary mt-3">Cancel</a>
-    </form>
-</div></div>
+    </div>
+</div>
+
+<div class="card shadow border-0 glass-card">
+    <div class="card-body p-4">
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            
+            <h5 class="text-secondary font-secondary border-bottom border-secondary border-opacity-25 pb-2 mb-4"><i class="bi bi-info-circle"></i> General Information</h5>
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    {{ form.name.label(class="form-label") }}
+                    {{ form.name(class="form-control border-secondary bg-dark text-light") }}
+                </div>
+                <div class="col-md-3">
+                    {{ form.sku.label(class="form-label") }}
+                    {{ form.sku(class="form-control border-secondary bg-dark text-light") }}
+                </div>
+                <div class="col-md-3">
+                    {{ form.barcode.label(class="form-label") }}
+                    {{ form.barcode(class="form-control border-secondary bg-dark text-light") }}
+                </div>
+                <div class="col-md-4">
+                    {{ form.category_id.label(class="form-label") }}
+                    {{ form.category_id(class="form-select border-secondary bg-dark text-light") }}
+                </div>
+                <div class="col-md-4">
+                    {{ form.product_type.label(class="form-label") }}
+                    {{ form.product_type(class="form-select border-secondary bg-dark text-light") }}
+                </div>
+                <div class="col-md-4">
+                    {{ form.unit_of_measure.label(class="form-label") }}
+                    {{ form.unit_of_measure(class="form-select border-secondary bg-dark text-light") }}
+                </div>
+                <div class="col-12">
+                    {{ form.description.label(class="form-label") }}
+                    {{ form.description(class="form-control border-secondary bg-dark text-light", rows=3) }}
+                </div>
+            </div>
+
+            <h5 class="text-secondary font-secondary border-bottom border-secondary border-opacity-25 pb-2 mb-4"><i class="bi bi-currency-rupee"></i> Pricing & Inventory Planning</h5>
+            <div class="row g-3 mb-4">
+                <div class="col-md-3">
+                    {{ form.cost_price.label(class="form-label") }}
+                    {{ form.cost_price(class="form-control border-secondary bg-dark text-light") }}
+                </div>
+                <div class="col-md-3">
+                    {{ form.sales_price.label(class="form-label") }}
+                    {{ form.sales_price(class="form-control border-secondary bg-dark text-light") }}
+                </div>
+                <div class="col-md-3">
+                    {{ form.tax_percent.label(class="form-label") }}
+                    {{ form.tax_percent(class="form-control border-secondary bg-dark text-light") }}
+                </div>
+                <div class="col-md-3">
+                    {{ form.reorder_level.label(class="form-label") }}
+                    {{ form.reorder_level(class="form-control border-secondary bg-dark text-light") }}
+                </div>
+                <div class="col-md-3">
+                    {{ form.safety_stock.label(class="form-label") }}
+                    {{ form.safety_stock(class="form-control border-secondary bg-dark text-light") }}
+                </div>
+                <div class="col-md-3">
+                    {{ form.procurement_type.label(class="form-label") }}
+                    {{ form.procurement_type(class="form-select border-secondary bg-dark text-light") }}
+                </div>
+                <div class="col-md-3">
+                    {{ form.lead_time_days.label(class="form-label") }}
+                    {{ form.lead_time_days(class="form-control border-secondary bg-dark text-light") }}
+                </div>
+                <div class="col-md-3 d-flex align-items-end pb-2">
+                    <div class="form-check form-switch mb-0">
+                        {{ form.is_active(class="form-check-input") }}
+                        {{ form.is_active.label(class="form-check-label font-secondary text-light") }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2">
+                {{ form.submit(class="btn btn-primary bg-gradient border-0 px-4 py-2") }}
+                <a href="{{ url_for('products.view_product', id=product.id) }}" class="btn btn-outline-secondary px-4 py-2">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
 {% endblock %}

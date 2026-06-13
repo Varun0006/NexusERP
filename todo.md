@@ -71,34 +71,34 @@ This is the order I would follow for an **18-hour hackathon** to maximize demo v
 
 ## Product Model
 
-* [ ] Product name
-* [ ] SKU
-* [ ] Barcode
-* [ ] Category
-* [ ] Description
-* [ ] Cost price
-* [ ] Sales price
-* [ ] Tax
+* [x] Product name
+* [x] SKU
+* [x] Barcode
+* [x] Category
+* [x] Description
+* [x] Cost price
+* [x] Sales price
+* [x] Tax
 
 ## Product Types
 
-* [ ] Raw Material
-* [ ] Semi Finished
-* [ ] Finished Product
+* [x] Raw Material
+* [x] Semi Finished
+* [x] Finished Product
 
 ## Product CRUD
 
-* [ ] Create product
-* [ ] Update product
-* [ ] Delete product
-* [ ] Search product
-* [ ] Product details page
+* [x] Create product
+* [x] Update product
+* [x] Delete product
+* [x] Search product
+* [x] Product details page
 
 ## Demo Checkpoint
 
-* [ ] Create Dining Table
-* [ ] Create Wooden Legs
-* [ ] Create Screws
+* [x] Create Dining Table
+* [x] Create Wooden Legs
+* [x] Create Screws
 
 ---
 

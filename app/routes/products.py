@@ -3,6 +3,7 @@ from flask_login import login_required
 from app.extensions import db
 from app.models.product import Product
 from app.models.category import Category
+from app.models.inventory import Inventory
 from app.forms.product_forms import ProductForm, CategoryForm
 from app.utils.decorators import permission_required
 
@@ -15,16 +16,27 @@ products_bp = Blueprint("products", __name__, template_folder="../templates/prod
 def list_products():
     page = request.args.get("page", 1, type=int)
     category_id = request.args.get("category_id", type=int)
+    search = request.args.get("search", "")
     query = Product.query
     if category_id:
         query = query.filter_by(category_id=category_id)
+    if search:
+        query = query.filter(Product.name.ilike(f"%{search}%") | Product.sku.ilike(f"%{search}%"))
     products = query.order_by(Product.created_at.desc()).paginate(
         page=page, per_page=20
     )
     categories = Category.query.all()
     return render_template(
-        "products/list.html", products=products, categories=categories
+        "products/list.html", products=products, categories=categories, search=search, category_id=category_id
     )
+
+
+@products_bp.route("/<int:id>")
+@login_required
+@permission_required("view_products")
+def view_product(id):
+    product = Product.query.get_or_404(id)
+    return render_template("products/view.html", product=product)
 
 
 @products_bp.route("/create", methods=["GET", "POST"])
@@ -53,6 +65,10 @@ def create_product():
             lead_time_days=form.lead_time_days.data,
         )
         db.session.add(product)
+        db.session.flush()
+        # Automatically initialize Inventory record
+        inv = Inventory(product_id=product.id, on_hand_qty=0.0, reserved_qty=0.0)
+        db.session.add(inv)
         db.session.commit()
         flash(f"Product '{product.name}' created.", "success")
         return redirect(url_for("products.list_products"))
